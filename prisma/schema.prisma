@@ -10,10 +10,12 @@ datasource db {
 }
 
 model Location {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(256)
-  description String @db.VarChar(2000)
-  meals       Meal[]
+  id                                Int     @id @default(autoincrement())
+  patricksVerrueckteIdWozuAuchImmer Int
+  name                              String  @db.VarChar(256)
+  description                       String  @db.VarChar(2000)
+  meals                             Meal[]
+  Alias                             Alias[]
 }
 
 model Meal {
@@ -21,10 +23,18 @@ model Meal {
   name       String   @db.VarChar(256)
   date       DateTime
   locationId Int
+  embeddings Json
+  tags       Json
   location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
   price      Price[]
 
   @@index([locationId])
+}
+
+model Alias {
+  name       String   @id @db.VarChar(256)
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
 }
 
 model Price {
