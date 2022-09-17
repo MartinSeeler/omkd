@@ -1,0 +1,38 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Location {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(256)
+  description String @db.VarChar(2000)
+  meals       Meal[]
+}
+
+model Meal {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(256)
+  date       DateTime
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  price      Price[]
+
+  @@index([locationId])
+}
+
+model Price {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(256)
+  price  Float
+  mealId Int
+  meal   Meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  @@index([mealId])
+}
