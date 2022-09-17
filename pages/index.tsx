@@ -67,27 +67,40 @@ const Home: NextPage = () => {
                   {meals.map((meal) => (
                     <li
                       key={person.name + " " + meal.name}
-                      className="flex items-center py-4 first:pt-0 last:pb-0"
+                      className="flex items-center py-4 first:pt-0 last:pb-0 gap-x-3"
                     >
                       <div className="flex min-w-0 flex-1 items-center">
-                        <div className="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
-                          <div>
-                            <p className="truncate text-sm font-medium text-blue-400">
+                        <div className="min-w-0 flex-1">
+                          <div className="space-y-2">
+                            <p className="truncate font-medium text-white flex-1">
                               {meal.name}
                             </p>
-                            <p className="mt-2 flex items-center text-sm text-gray-500">
-                              <EnvelopeIcon
-                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                aria-hidden="true"
-                              />
-                              <span className="truncate">{meal.price}</span>
-                            </p>
+                            {meal.allergenes.length + meal.tags.length > 0 && (
+                              <p className="flex items-center text-sm gap-x-2 gap-y-1">
+                                {meal.allergenes.map((tag) => (
+                                  <span
+                                    key={tag + meal.name}
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-700 text-white"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                                {meal.tags.map((tag) => (
+                                  <span
+                                    key={tag + meal.name}
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-600 text-white"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
                       <div>
                         <p className="text-white font-medium text-sm">
-                          {meal.price}
+                          {meal.price} €
                         </p>
                       </div>
                     </li>
