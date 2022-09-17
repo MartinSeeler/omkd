@@ -56,7 +56,7 @@ export const appRouter = trpc
           method: "POST",
           body: JSON.stringify({
             input: input.query,
-            model: "text-search-davinci-query-001",
+            model: "text-search-curie-query-001",
           }),
         }
       )
