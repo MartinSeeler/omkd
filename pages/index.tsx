@@ -113,7 +113,13 @@ const Home: NextPage = () => {
                         type="box"
                         strokeWidth={3}
                         color="#3b82f6"
-                        show={query && top5.includes(meal.id) ? true : false}
+                        show={
+                          query &&
+                          queryEmb.status === "success" &&
+                          top5.includes(meal.id)
+                            ? true
+                            : false
+                        }
                         multiline={true}
                       >
                         <div className="font-medium text-white group-hover:text-blue-400 transition-colors">
