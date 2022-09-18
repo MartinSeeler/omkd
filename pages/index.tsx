@@ -9,8 +9,13 @@ import { RoughNotation } from "react-rough-notation";
 
 const Home: NextPage = () => {
   const [query, setQuery] = useState("");
-  const [top5, setTop5] = useState([] as number[]);
-  const queryEmb = trpc.useQuery(["similar", { query }]);
+  const queryEmb = trpc.useQuery(["similar", { query }], {
+    enabled: query.length >= 3,
+    retry(failureCount, error) {
+      if (error.data?.httpStatus === 403) return false;
+      return failureCount < 3;
+    },
+  });
   // get current date in YYYY-MM-DD format
   const mealsData = trpc.useQuery([
     "meals-by-date",
@@ -80,6 +85,11 @@ const Home: NextPage = () => {
                     <span>Vorschläge zeigen</span>
                   </button>
                 </div>
+                  {queryEmb.status === "error" && (
+                    <div className="text-xl text-red-500">
+                      {queryEmb.error.message}
+                    </div>
+                  )}
               </div>
             </Form>
           </Formik>
