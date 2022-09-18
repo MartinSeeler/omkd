@@ -9,6 +9,7 @@ import { RoughNotation } from "react-rough-notation";
 
 const Home: NextPage = () => {
   const [query, setQuery] = useState("");
+  const [top3, setTop5] = useState([] as number[]);
   const queryEmb = trpc.useQuery(["similar", { query }], {
     enabled: query.length >= 3,
     retry(failureCount, error) {
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
   const mealsData = trpc.useQuery([
     "meals-by-date",
     { date: new Date().toISOString().slice(0, 10) },
+    // { date: "2022-09-15" },
   ]);
   useEffect(() => {
     if (queryEmb.data && mealsData.data) {
@@ -34,12 +36,11 @@ const Home: NextPage = () => {
         id: mealEmbedding.id,
         similarity: cosSimilarity(queryEmbedding, mealEmbedding.embedding),
       }));
-      // get top5 most similar meals
-      const top5 = similarities
+      const top3 = similarities
         .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 5)
+        .slice(0, 3)
         .map((similarity) => similarity.id);
-      setTop5(top5);
+      setTop5(top3);
     }
   }, [queryEmb.data, mealsData.data]);
   return (
@@ -55,9 +56,7 @@ const Home: NextPage = () => {
             <Form>
               <div className="rounded-lg bg-gray-800 py-10 px-6 xl:px-10">
                 <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                  {queryEmb.status === "loading" && query.length > 0
-                    ? "Magic wird angewendet..."
-                    : "Worauf hast du Bock?"}
+                  Worauf hast du Bock?
                 </h1>
                 <div className="mt-3 flex rounded-md shadow-sm">
                   <div className="relative flex flex-grow items-stretch focus-within:z-10">
@@ -70,6 +69,7 @@ const Home: NextPage = () => {
                     <Field
                       type="text"
                       name="query"
+                      minLength={3}
                       className="block w-full rounded-none rounded-l-md border-gray-600 pl-10 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                       placeholder="Katzenfutter..."
                     />
@@ -85,11 +85,62 @@ const Home: NextPage = () => {
                     <span>Vorschläge zeigen</span>
                   </button>
                 </div>
+                <div className="pt-6">
+                  {queryEmb.isLoading && (
+                    <p className="text-xl text-white">Wir übrlegen...</p>
+                  )}
                   {queryEmb.status === "error" && (
                     <div className="text-xl text-red-500">
                       {queryEmb.error.message}
                     </div>
                   )}
+                  {queryEmb.status === "success" && (
+                    <div className="text-xl text-gray-400">
+                      {top3.length > 0 ? (
+                        <div className="space-y-2">
+                          <p className="text-xl text-white">
+                            Wie wäre es denn damit?
+                          </p>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5">
+                            {top3.map((id) => {
+                              const meal = mealsData.data
+                                ?.map((location) => location.meals)
+                                .flat()
+                                .find((meal) => meal.id === id);
+                              return (
+                                <div
+                                  key={id}
+                                  className="flex flex-col space-y-2"
+                                >
+                                  <p className="text-xl text-white">
+                                    <RoughNotation
+                                      type="highlight"
+                                      show={true}
+                                      color="#3b82f6"
+                                      iterations={2}
+                                      multiline
+                                      animationDelay={1000}
+                                      animationDuration={1000}
+                                    >
+                                      {meal?.name}
+                                    </RoughNotation>
+                                  </p>
+                                  <small className="text-sm">
+                                    {meal?.location.name}
+                                  </small>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xl text-gray-400">
+                          Keine Vorschläge gefunden.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </Form>
           </Formik>
@@ -123,10 +174,11 @@ const Home: NextPage = () => {
                         type="box"
                         strokeWidth={3}
                         color="#3b82f6"
+                        padding={[7, 7, 7, 7]}
                         show={
                           query &&
                           queryEmb.status === "success" &&
-                          top5.includes(meal.id)
+                          top3.includes(meal.id)
                             ? true
                             : false
                         }
