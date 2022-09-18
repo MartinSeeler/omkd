@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { trpc } from "../utils/trpc";
 // @ts-ignore
 import cosSimilarity from "cos-similarity";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon, SparklesIcon } from "@heroicons/react/20/solid";
 import { Formik, Field, Form } from "formik";
 import { useEffect, useState } from "react";
 import { RoughNotation } from "react-rough-notation";
@@ -45,8 +45,8 @@ const Home: NextPage = () => {
   }, [queryEmb.data, mealsData.data]);
   return (
     <div className="bg-gray-900 min-h-screen">
-      <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8 lg:py-24">
-        <div className="space-y-12">
+      <div className="mx-auto max-w-7xl py-4 md:py-12 px-4 sm:px-6 lg:px-8 lg:py-24">
+        <div className="space-y-4 lg:space-y-12">
           <Formik
             initialValues={{ query }}
             onSubmit={async (values) => {
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
                 <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                   Worauf hast du Bock?
                 </h1>
-                <div className="mt-3 flex rounded-md shadow-sm">
+                <div className="mt-3 flex flex-col md:flex-row rounded-md shadow-sm">
                   <div className="relative flex flex-grow items-stretch focus-within:z-10">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <MagnifyingGlassIcon
@@ -70,35 +70,37 @@ const Home: NextPage = () => {
                       type="text"
                       name="query"
                       minLength={3}
-                      className="block w-full rounded-none rounded-l-md border-gray-600 pl-10 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full rounded-t-md md:rounded-none md:rounded-l-md border-gray-600 pl-10 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                       placeholder="Katzenfutter..."
                     />
                   </div>
                   <button
                     type="submit"
-                    className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-gray-600 bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400 focus:border-blue-500"
+                    className="relative -ml-px inline-flex items-center justify-center md:justify-start space-x-2 rounded-b-md md:rounded-none md:rounded-r-md border border-gray-600 bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400 focus:border-blue-500"
                   >
-                    <MagnifyingGlassIcon
+                    <SparklesIcon
                       className="h-5 w-5 text-white"
                       aria-hidden="true"
                     />
-                    <span>Vorschläge zeigen</span>
+                    <span>Schlag was vor!</span>
                   </button>
                 </div>
                 <div className="pt-6">
                   {queryEmb.isLoading && (
-                    <p className="text-xl text-white">Wir übrlegen...</p>
+                    <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                      Wir übrlegen...
+                    </p>
                   )}
                   {queryEmb.status === "error" && (
-                    <div className="text-xl text-red-500">
+                    <div className="text-xl font-bold tracking-tight text-red-500 sm:text-2xl">
                       {queryEmb.error.message}
                     </div>
                   )}
                   {queryEmb.status === "success" && (
-                    <div className="text-xl text-gray-400">
+                    <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                       {top3.length > 0 ? (
                         <div className="space-y-2">
-                          <p className="text-xl text-white">
+                          <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                             Wie wäre es denn damit?
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5">
