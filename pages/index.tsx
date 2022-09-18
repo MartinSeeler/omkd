@@ -217,7 +217,36 @@ const Home: NextPage = () => {
               ))}
             </nav>
           </div>
-          {mealsData.status === "loading" && "Loading"}
+          {mealsData.status === "loading" &&
+            [0, 1, 2, 3, 4].map((idx) => (
+              <div
+                key={`loader-${idx}`}
+                className="rounded-lg bg-gray-800 py-10 px-6 xl:px-10"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-6 flex flex-col">
+                    <div className="space-y-3 leading-6">
+                      <div className="animate-pulse w-2/3 bg-slate-200 h-6" />
+                      <div className="animate-pulse w-1/2 bg-slate-200 h-4" />
+                    </div>
+                  </div>
+                  <ul role="list" className="divide-y divide-gray-700">
+                    <li className="flex flex-col justify-start py-4 first:pt-0 last:pb-0 gap-3">
+                      <div className="animate-pulse h-5 w-80 bg-slate-100" />
+                      <div className="animate-pulse h-4 w-24 bg-slate-100" />
+                    </li>
+                    <li className="flex flex-col justify-start py-4 first:pt-0 last:pb-0 gap-3">
+                      <div className="animate-pulse h-5 w-4/5 bg-slate-100" />
+                      <div className="animate-pulse h-4 w-24 bg-slate-100" />
+                    </li>
+                    <li className="flex flex-col justify-start py-4 first:pt-0 last:pb-0 gap-3">
+                      <div className="animate-pulse h-5 w-3/4 bg-slate-100" />
+                      <div className="animate-pulse h-4 w-24 bg-slate-100" />
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            ))}
           {mealsData.data?.map((location) => (
             <div
               key={location.name}
