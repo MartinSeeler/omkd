@@ -7,9 +7,38 @@ import { Formik, Field, Form } from "formik";
 import { useEffect, useState } from "react";
 import { RoughNotation } from "react-rough-notation";
 
+// get all dates of the current week from Mo to Su
+const getWeekDates = () => {
+  const date = new Date();
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+  return [...Array(7)].map((_, i) => {
+    const newDate = new Date(date.setDate(diff + i));
+    return newDate.toISOString().slice(0, 10);
+  });
+};
+
+type Day = {
+  date: string;
+  name: string;
+};
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 const Home: NextPage = () => {
   const [query, setQuery] = useState("");
   const [top3, setTop5] = useState([] as number[]);
+  const [weekDays] = useState(() =>
+    getWeekDates().map((date, i) => {
+      const day = new Date(date).getDay();
+      const name = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][day];
+      return { date, name } as Day;
+    })
+  );
+  const [today] = useState(() => new Date().toISOString().slice(0, 10));
+  const [selectedDay, setSelectedDay] = useState(() => today);
   const queryEmb = trpc.useQuery(["similar", { query }], {
     enabled: query.length >= 3,
     retry(failureCount, error) {
@@ -17,12 +46,9 @@ const Home: NextPage = () => {
       return failureCount < 3;
     },
   });
+
   // get current date in YYYY-MM-DD format
-  const mealsData = trpc.useQuery([
-    "meals-by-date",
-    { date: new Date().toISOString().slice(0, 10) },
-    // { date: "2022-09-15" },
-  ]);
+  const mealsData = trpc.useQuery(["meals-by-date", { date: selectedDay }]);
   useEffect(() => {
     if (queryEmb.data && mealsData.data) {
       // compare query embedding to all meal embeddings from each location
@@ -146,6 +172,51 @@ const Home: NextPage = () => {
               </div>
             </Form>
           </Formik>
+          <div>
+            <nav
+              className="isolate flex divide-x divide-gray-900 rounded-lg shadow"
+              aria-label="Tabs"
+            >
+              {weekDays.map((tab, tabIdx) => (
+                <button
+                  key={tab.name}
+                  className={classNames(
+                    tab.date === selectedDay
+                      ? "text-white"
+                      : "text-gray-300 hover:text-gray-100",
+                    tabIdx === 0 ? "rounded-l-lg" : "",
+                    tabIdx === weekDays.length - 1 ? "rounded-r-lg" : "",
+                    "group relative min-w-0 flex-1 overflow-hidden bg-gray-800 py-4 px-4 text-sm font-medium text-center hover:bg-gray-700 focus:z-10"
+                  )}
+                  onClick={() => setSelectedDay(tab.date)}
+                >
+                  <span>
+                    <RoughNotation
+                      type="circle"
+                      color="#3b82f6"
+                      iterations={2}
+                      strokeWidth={3}
+                      padding={[8, 8, 8, 8]}
+                      animationDelay={1000}
+                      animationDuration={1000}
+                      show={tab.date === today}
+                    >
+                      {tab.name}
+                    </RoughNotation>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      tab.date === selectedDay
+                        ? "bg-blue-500"
+                        : "bg-transparent",
+                      "absolute inset-x-0 bottom-0 h-1"
+                    )}
+                  />
+                </button>
+              ))}
+            </nav>
+          </div>
           {mealsData.status === "loading" && "Loading"}
           {mealsData.data?.map((location) => (
             <div
