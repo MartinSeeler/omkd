@@ -112,62 +112,64 @@ const Home: NextPage = () => {
                   </button>
                 </div>
                 <div className="pt-6">
-                  {queryEmb.isLoading && (
-                    <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                      Wir übrlegen...
-                    </p>
-                  )}
+                  {queryEmb.isLoading ||
+                    (mealsData.isLoading && query.length >= 3 && (
+                      <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                        Wir übrlegen...
+                      </p>
+                    ))}
                   {queryEmb.status === "error" && (
                     <div className="text-xl font-bold tracking-tight text-red-500 sm:text-2xl">
                       {queryEmb.error.message}
                     </div>
                   )}
-                  {queryEmb.status === "success" && (
-                    <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                      {top3.length > 0 ? (
-                        <div className="space-y-2">
-                          <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                            Wie wäre es denn damit?
-                          </p>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5">
-                            {top3.map((id) => {
-                              const meal = mealsData.data
-                                ?.map((location) => location.meals)
-                                .flat()
-                                .find((meal) => meal.id === id);
-                              return (
-                                <div
-                                  key={id}
-                                  className="flex flex-col space-y-2"
-                                >
-                                  <p className="text-xl text-white">
-                                    <RoughNotation
-                                      type="highlight"
-                                      show={true}
-                                      color="#3b82f6"
-                                      iterations={2}
-                                      multiline
-                                      animationDelay={1000}
-                                      animationDuration={1000}
-                                    >
-                                      {meal?.name}
-                                    </RoughNotation>
-                                  </p>
-                                  <small className="text-sm">
-                                    {meal?.location.name}
-                                  </small>
-                                </div>
-                              );
-                            })}
+                  {queryEmb.status === "success" &&
+                    mealsData.status === "success" &&
+                    query.length >= 3 && (
+                      <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                        {top3.length > 0 ? (
+                          <div className="space-y-2">
+                            <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                              Wie wäre es denn damit?
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5">
+                              {top3.map((id) => {
+                                const meal = mealsData.data
+                                  ?.map((location) => location.meals)
+                                  .flat()
+                                  .find((meal) => meal.id === id);
+                                return (
+                                  <div
+                                    key={id}
+                                    className="flex flex-col space-y-2"
+                                  >
+                                    <p className="text-xl text-white">
+                                      <RoughNotation
+                                        type="highlight"
+                                        show={true}
+                                        color="#3b82f6"
+                                        iterations={2}
+                                        multiline
+                                        animationDuration={1000}
+                                      >
+                                        {meal?.name}
+                                      </RoughNotation>
+                                    </p>
+                                    <small className="text-sm">
+                                      {meal?.location.name}
+                                    </small>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <p className="text-xl text-gray-400">
-                          Keine Vorschläge gefunden.
-                        </p>
-                      )}
-                    </div>
-                  )}
+                        ) : (
+                          <p className="text-xl text-gray-400">
+                            Keine Vorschläge gefunden.
+                          </p>
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
             </Form>
