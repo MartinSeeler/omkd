@@ -58,7 +58,10 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({
       : new Date(date);
   if (isNaN(startDate.getTime())) {
     return {
-      notFound: true,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
   const endDate = new Date(startDate);
