@@ -8,31 +8,12 @@ import { useEffect, useState } from "react";
 import { RoughNotation } from "react-rough-notation";
 import { prisma } from "../db/client";
 
-// get all dates of the current week from Mo to Su
-const getWeekDates = () => {
-  const date = new Date();
-  const day = date.getDay();
-  const diff = date.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-  return [...Array(7)].map((_, i) => {
-    const newDate = new Date(date.setDate(diff + i));
-    return newDate.toISOString().slice(0, 10);
-  });
-};
-
-type Day = {
-  date: string;
-  name: string;
-};
-
 import { GetStaticProps } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { Location, Price } from "@prisma/client";
 import { JSONValue } from "superjson/dist/types";
-import Link from "next/link";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import Navigation from "../components/navigation";
+import { getWeekDates } from "../utils/dates";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -130,14 +111,6 @@ const Home = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [query, setQuery] = useState("");
   const [top3, setTop3] = useState([] as number[]);
-  const [weekDays] = useState(() =>
-    getWeekDates().map((date, i) => {
-      const day = new Date(date).getDay();
-      const name = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][day];
-      return { date, name } as Day;
-    })
-  );
-  const [today] = useState(() => new Date().toISOString().slice(0, 10));
   const queryEmb = trpc.useQuery(["similar", { query }], {
     enabled: query.length >= 3,
     retry(failureCount, error) {
@@ -180,7 +153,7 @@ const Home = ({
             <Form>
               <div className="px-6 py-10 bg-gray-800 rounded-lg xl:px-10">
                 <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                  Worauf hast du Bock? {date}
+                  Worauf hast du Bock?
                 </h1>
                 <div className="flex flex-col mt-3 rounded-md shadow-sm md:flex-row">
                   <div className="relative flex items-stretch flex-grow focus-within:z-10">
@@ -269,51 +242,7 @@ const Home = ({
               </div>
             </Form>
           </Formik>
-          <nav
-            className="flex divide-x divide-gray-900 rounded-lg shadow isolate"
-            aria-label="Tabs"
-          >
-            {weekDays.map((tab, tabIdx) => (
-              <Link
-                key={tab.name}
-                href={`/${tab.date === today ? "today" : tab.date}`}
-              >
-                <a
-                  className={classNames(
-                    tab.date === date
-                      ? "text-white"
-                      : "text-gray-300 hover:text-gray-100",
-                    tabIdx === 0 ? "rounded-l-lg" : "",
-                    tabIdx === weekDays.length - 1 ? "rounded-r-lg" : "",
-                    "group relative min-w-0 flex-1 overflow-hidden bg-gray-800 py-4 px-4 text-sm font-medium text-center hover:bg-gray-700 focus:z-10"
-                  )}
-                >
-                  <span>
-                    <RoughNotation
-                      type="circle"
-                      color="#3b82f6"
-                      iterations={2}
-                      strokeWidth={3}
-                      padding={[8, 8, 8, 8]}
-                      animationDelay={1000}
-                      animationDuration={1000}
-                      show={tab.date === today}
-                    >
-                      {tab.name}
-                    </RoughNotation>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className={classNames(
-                      tab.date === date ? "bg-blue-500" : "bg-transparent",
-                      "absolute inset-x-0 bottom-0 h-1"
-                    )}
-                  />
-                </a>
-              </Link>
-            ))}
-          </nav>
-
+          <Navigation selectedDate={date} />
           {locations.map((location) => (
             <div
               key={location.name}
