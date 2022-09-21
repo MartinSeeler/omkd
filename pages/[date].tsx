@@ -147,6 +147,7 @@ const Home = ({
     <div className="min-h-screen bg-gray-900">
       <div className="px-4 py-4 mx-auto max-w-7xl md:py-12 sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-4 lg:space-y-12">
+          <h2 style="font-family: 'Handlee', 'Arial'">Ohne Mampf kein Dampf</h2> 
           <Formik
             initialValues={{ query }}
             onSubmit={async (values) => {
