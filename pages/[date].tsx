@@ -258,7 +258,7 @@ const Home = ({
                       {location.name}
                     </h1>
                     <p className="mt-2 text-sm text-gray-400">
-                      Addressenstraße 42
+                      {location.address}
                     </p>
                   </div>
                   <p className="max-w-md mt-6 text-sm text-gray-400">

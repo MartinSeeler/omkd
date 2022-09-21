@@ -13,6 +13,7 @@ model Location {
   id                                Int     @id @default(autoincrement())
   patricksVerrueckteIdWozuAuchImmer Int
   name                              String  @db.VarChar(256)
+  address                           String  @default("") @db.VarChar(512)
   description                       String  @db.VarChar(2000)
   meals                             Meal[]
   Alias                             Alias[]
