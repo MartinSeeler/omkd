@@ -144,7 +144,7 @@ const Home = ({
     }
   }, [queryEmb.data, locations]);
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="px-4 py-4 mx-auto max-w-7xl md:py-12 sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-4 lg:space-y-12">
           <Formik
@@ -154,8 +154,8 @@ const Home = ({
             }}
           >
             <Form>
-              <div className="px-6 py-10 bg-gray-800 rounded-lg xl:px-10">
-                <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+              <div className="px-6 py-10 bg-white rounded-lg shadow dark:bg-gray-800 xl:px-10">
+                <h1 className="text-xl font-bold tracking-tight dark:text-white sm:text-2xl">
                   Worauf hast du Bock?
                 </h1>
                 <div className="flex flex-col mt-3 rounded-md shadow-sm md:flex-row">
@@ -170,13 +170,13 @@ const Home = ({
                       type="text"
                       name="query"
                       minLength={3}
-                      className="block w-full pl-10 border-gray-600 rounded-t-md md:rounded-none md:rounded-l-md focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-t-md md:rounded-none md:rounded-l-md focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                       placeholder="Katzenfutter..."
                     />
                   </div>
                   <button
                     type="submit"
-                    className="relative inline-flex items-center justify-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-white bg-blue-500 border border-gray-600 md:justify-start rounded-b-md md:rounded-none md:rounded-r-md hover:bg-blue-400 focus:border-blue-500"
+                    className="relative inline-flex items-center justify-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-white bg-blue-500 border border-gray-300 dark:border-gray-600 md:justify-start rounded-b-md md:rounded-none md:rounded-r-md hover:bg-blue-400 focus:border-blue-500"
                   >
                     <SparklesIcon
                       className="w-5 h-5 text-white"
@@ -187,7 +187,7 @@ const Home = ({
                 </div>
                 <div className="pt-6">
                   {queryEmb.isLoading && (
-                    <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                    <p className="text-xl font-bold tracking-tight dark:text-white sm:text-2xl">
                       Wir übrlegen...
                     </p>
                   )}
@@ -197,10 +197,10 @@ const Home = ({
                     </div>
                   )}
                   {queryEmb.status === "success" && query.length >= 3 && (
-                    <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                    <div className="text-xl font-bold tracking-tight dark:text-white sm:text-2xl">
                       {top3.length > 0 ? (
                         <div className="space-y-2">
-                          <p className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                          <p className="text-xl font-bold tracking-tight dark:text-white sm:text-2xl">
                             Wie wäre es denn damit?
                           </p>
                           <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-5">
@@ -249,12 +249,12 @@ const Home = ({
           {locations.map((location) => (
             <div
               key={location.name}
-              className="px-6 py-10 bg-gray-800 rounded-lg xl:px-10"
+              className="px-6 py-10 bg-white rounded-lg shadow dark:bg-gray-800 xl:px-10"
             >
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div className="flex flex-col space-y-6">
                   <div className="space-y-1 leading-6">
-                    <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                    <h1 className="text-xl font-bold tracking-tight dark:text-white sm:text-2xl">
                       {location.name}
                     </h1>
                     <p className="mt-2 text-sm text-gray-400">
@@ -265,7 +265,10 @@ const Home = ({
                     {location.description}
                   </p>
                 </div>
-                <ul role="list" className="divide-y divide-gray-700">
+                <ul
+                  role="list"
+                  className="divide-y divide-gray-200 dark:divide-gray-700"
+                >
                   {location.meals.map((meal) => (
                     <li
                       key={location.name + " " + meal.name}
@@ -285,7 +288,7 @@ const Home = ({
                         }
                         multiline={true}
                       >
-                        <div className="font-medium text-white transition-colors group-hover:text-blue-400">
+                        <div className="font-medium transition-colors dark:text-white dark:group-hover:text-blue-400 group-hover:text-blue-500">
                           {meal.name}
                         </div>
                         {(meal.tags as string[]).length > 0 && (
@@ -293,7 +296,7 @@ const Home = ({
                             {((meal.tags as string[]) || []).map((tag) => (
                               <div
                                 key={tag}
-                                className="text-xs font-medium text-gray-400 bg-gray-700 rounded-md px-1 py-0.5 mr-1
+                                className="text-xs font-medium dark:text-gray-400 text-gray-600 dark:bg-gray-700 bg-gray-200 rounded-md px-1 py-0.5 mr-1
                                   group-hover:bg-blue-400 group-hover:text-white transition-colors"
                               >
                                 {tag}
@@ -301,7 +304,7 @@ const Home = ({
                             ))}
                           </div>
                         )}
-                        <div className="pt-2 text-sm text-white">
+                        <div className="pt-2 text-sm dark:text-white">
                           Preis:{" "}
                           {meal.price
                             .sort((a, b) => a.price - b.price)
