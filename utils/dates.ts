@@ -1,10 +1,14 @@
+import getISODay from "date-fns/getISODay";
+import sub from "date-fns/sub";
+import add from "date-fns/add";
+
 // get all dates of the current week from Mo to Su
 export const getWeekDates = () => {
-  const date = new Date();
-  const day = date.getDay();
-  const diff = date.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-  return [...Array(7)].map((_, i) => {
-    const newDate = new Date(date.setDate(diff + i));
-    return newDate.toISOString().slice(0, 10);
-  });
+  const isoWeekday = getISODay(new Date());
+  const monday = sub(new Date(), { days: isoWeekday - 1 });
+
+  return Array.from(
+    { length: 7 },
+    (_, i) => add(monday, { days: i }).toISOString().split("T")[0]
+  );
 };
