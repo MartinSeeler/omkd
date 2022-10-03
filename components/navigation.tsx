@@ -39,7 +39,7 @@ const Navigation: FC<NavigationProps> = ({ selectedDate }) => {
                 : "dark:text-gray-300 text-gray-500 dark:hover:text-gray-100 hover:text-black",
               tabIdx === 0 ? "rounded-l-lg" : "",
               tabIdx === weekDays.length - 1 ? "rounded-r-lg" : "",
-              "group relative min-w-0 flex-1 overflow-hidden dark:bg-gray-800 bg-white py-4 px-4 text-sm font-medium text-center dark:hover:bg-gray-700 hover:bg-gray-50 focus:z-10"
+              "group relative min-w-0 flex-1 overflow-hidden dark:bg-gray-800 bg-white py-4 px-4 text-sm font-medium text-center dark:hover:bg-gray-700 hover:bg-zinc-50 focus:z-10"
             )}
           >
             <span>
