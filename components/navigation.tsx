@@ -24,7 +24,7 @@ const Navigation: FC<NavigationProps> = ({ selectedDate }) => {
   );
   return (
     <nav
-      className="flex divide-x divide-gray-900 rounded-lg shadow isolate"
+      className="flex divide-x divide-gray-100 rounded-lg shadow dark:divide-gray-900 isolate"
       aria-label="Tabs"
     >
       {weekDays.map((tab, tabIdx) => (
@@ -35,11 +35,11 @@ const Navigation: FC<NavigationProps> = ({ selectedDate }) => {
           <a
             className={cn(
               tab.date === selectedDate
-                ? "text-white"
-                : "text-gray-300 hover:text-gray-100",
+                ? "dark:text-white"
+                : "dark:text-gray-300 text-gray-500 dark:hover:text-gray-100 hover:text-black",
               tabIdx === 0 ? "rounded-l-lg" : "",
               tabIdx === weekDays.length - 1 ? "rounded-r-lg" : "",
-              "group relative min-w-0 flex-1 overflow-hidden bg-gray-800 py-4 px-4 text-sm font-medium text-center hover:bg-gray-700 focus:z-10"
+              "group relative min-w-0 flex-1 overflow-hidden dark:bg-gray-800 bg-white py-4 px-4 text-sm font-medium text-center dark:hover:bg-gray-700 hover:bg-zinc-50 focus:z-10"
             )}
           >
             <span>
